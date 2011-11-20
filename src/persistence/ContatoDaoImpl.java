@@ -32,17 +32,15 @@ public class ContatoDaoImpl implements ContatoDao {
     public void pesquisarContato(Contato c) {
          Banco banco = Banco.getInstance();
         try {
-            banco.openRecStore();
-           
+            banco.openRecStore();           
             RecordStore recordStore = banco.getRecordStore();
             RecordEnumeration enum = recordStore.enumerateRecords(null, null, false);
             while ( enum.hasNextElement()) {
                 //armazena o próximo registro em um String
                 String contatoString = new String(enum.nextRecord());
-                System.out.println(contatoString);
-                contatoString.indexOf(";");
-            }
-            
+                System.out.println("Contato:: " + contatoString);
+                
+            }            
             
         } catch (Exception ex) {
             ex.printStackTrace();

@@ -91,13 +91,24 @@ public class Test extends MIDlet implements CommandListener {
     // FORMULARIO PARA BUSCAR POR NOME
     
     public void formBucarContato(){        
-        Command commandoBuscar = new Command("Buscar", Command.OK, 1);        
-        TextField nomeBusca = new TextField("NOME: ", "", 15, TextField.ANY);
+        final Command commandoBuscar = new Command("Buscar", Command.OK, 1);        
+        final TextField nomeBusca = new TextField("NOME: ", "", 15, TextField.ANY);
         this.buscarContatoForm = new Form("BUSCAR");
         this.buscarContatoForm.append(nomeBusca);
         this.buscarContatoForm.addCommand(exitCommand);
         this.buscarContatoForm.addCommand(commandoBuscar);
-        this.buscarContatoForm.setCommandListener(this);
+        this.buscarContatoForm.setCommandListener(new CommandListener() {
+            public void commandAction(Command c, Displayable d) {
+                if(c==commandoBuscar){
+                    String nome = nomeBusca.getString().trim();
+                    ContatoDaoImpl contatoDaoImpl = new ContatoDaoImpl();
+                    Contato contato = new Contato();
+                    contato.setNome(nome);
+                    System.out.println("Pesquisar Por " + contato.getNome());
+                    contatoDaoImpl.pesquisarContato(contato);
+                }
+            }
+        });
     }
         
     public void startApp() {    
@@ -158,7 +169,7 @@ public class Test extends MIDlet implements CommandListener {
 
     private void pesquisarContato() {
         this.formBucarContato();
-        Display.getDisplay(this).setCurrent(buscarContatoForm);
+        Display.getDisplay(this).setCurrent(this.buscarContatoForm);
         
     }
 

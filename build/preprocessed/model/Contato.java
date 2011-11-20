@@ -12,7 +12,11 @@ public class Contato {
     
     private String nome;
     private String twitter;
-
+    
+    public Contato(){
+        super();
+    }
+    
     public Contato(String nome, String twitter){
         this.nome = nome;
         this.twitter = twitter;
