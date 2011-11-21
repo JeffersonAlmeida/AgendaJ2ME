@@ -4,6 +4,7 @@
  */
 package persistence;
 
+import java.util.Vector;
 import model.Contato;
 
 /**
@@ -23,6 +24,6 @@ public interface ContatoDao {
     public void alterarContato(Contato c);
     public void excluirContato(Contato c);
     
-    public void listarTodos();
+    public Vector listarTodos();
     
 }

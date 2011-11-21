@@ -4,6 +4,7 @@
  */
 
 import java.io.IOException;
+import java.util.Vector;
 import javax.microedition.lcdui.Choice;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
@@ -53,12 +54,14 @@ public class Test extends MIDlet implements CommandListener {
        this.alterarImage = Image.createImage("/imagem/alterar.png");       
        this.excluirImage =  Image.createImage("/imagem/excluir.png");       
        this.pesquisarImage = Image.createImage("/imagem/pesquisar.png");    
-       this.exitCommand = new Command("exit", Command.EXIT, 0);       
+       this.exitCommand = new Command("exit", Command.EXIT, 0);    
+       
        this.menu = new List("Agenda Menu", Choice.IMPLICIT);
        menu.append("INCLUIR", incluirImage);
        menu.append("ALTERAR", alterarImage);
        menu.append("EXCLUIR", excluirImage);
-       menu.append("PESQUISAR", pesquisarImage);       
+       menu.append("PESQUISAR", pesquisarImage);      
+       
        menu.addCommand(exitCommand);
        menu.setCommandListener(this);   
        Display.getDisplay(this).setCurrent(menu);    
@@ -88,7 +91,7 @@ public class Test extends MIDlet implements CommandListener {
             this.inserirContatoForm.setCommandListener(new CommandListener() { 
             public void commandAction(Command c, Displayable d) {
                if(c==comandoVoltar){
-                       Display.getDisplay(getThis()).setCurrent(menu);  
+                    Display.getDisplay(getThis()).setCurrent(menu);  
                }else if(c==salvarCommand){
                     salvarContato();                  
                     Display.getDisplay(getThis()).setCurrent(apresentaContatoForm);
@@ -137,14 +140,39 @@ public class Test extends MIDlet implements CommandListener {
     
     public void formBucarContato(){      
         
+        // Comandos
         final Command exitCommand = new Command("exit", Command.EXIT, 0);
-        final Command commandoBuscar = new Command("Buscar", Command.OK, 1);        
+        final Command commandoBuscar = new Command("Buscar", Command.OK, 1);    
+        final Command comandoVoltar = new Command("Back", Command.BACK, 2);
+        final Command comandoAlterarContato = new Command("Alterar", Command.ITEM, 3); 
+       
+        
+        // campo usado para o usuario digitar a busca
         final TextField nomeBusca = new TextField("NOME: ", "", 15, TextField.ANY);
-        this.buscarContatoForm = new Form("BUSCAR");
-        this.buscarContatoForm.append(nomeBusca);
-        this.buscarContatoForm.addCommand(exitCommand);
-        this.buscarContatoForm.addCommand(commandoBuscar);
-        this.buscarContatoForm.setCommandListener(new CommandListener() {
+        
+        ContatoDaoImpl contatoDaoImpl = new ContatoDaoImpl();
+        Vector contatos = contatoDaoImpl.listarTodos();
+        
+        // Lista - de contatos
+        List contatosList = new List("Contatos", Choice.IMPLICIT);
+        
+        // adiciona os contatos na lista.
+        int i=0;
+        while(i<contatos.size()){
+            String contato = (String) contatos.elementAt(i);
+            System.out.println(contato);
+            contatosList.append(contato, null);
+            i++;
+        }
+        
+        contatosList.addCommand(commandoBuscar);
+        contatosList.addCommand(comandoVoltar);
+        contatosList.addCommand(comandoAlterarContato);
+        contatosList.addCommand(exitCommand);
+        
+        Display.getDisplay(this).setCurrent(contatosList); 
+                
+        contatosList.setCommandListener(new CommandListener() {
         public void commandAction(Command c, Displayable d) {
                 if(c==commandoBuscar){
                     String nome = nomeBusca.getString().trim();
@@ -153,6 +181,13 @@ public class Test extends MIDlet implements CommandListener {
                     contato.setNome(nome);
                     System.out.println("Pesquisar Por " + contato.getNome());
                     contatoDaoImpl.pesquisarContato(contato);
+                }else if(c==comandoVoltar){
+                     Display.getDisplay(getThis()).setCurrent(menu);  
+                }else if(c==comandoAlterarContato){
+                    // implementar
+                }else if(c==exitCommand){
+                    destroyApp(false);
+                    notifyDestroyed();
                 }
             }
         });
@@ -185,10 +220,10 @@ public class Test extends MIDlet implements CommandListener {
           }else{
                  List down = (List)display.getCurrent();
                  switch(down.getSelectedIndex()) {
-                   case 0: incluirContato();break;
-                   case 1: alterarContato();break;
-                   case 2: excluirContato();break;
-                   case 3: pesquisarContato();break;
+                       case 0: incluirContato();break;
+                       case 1: alterarContato();break;
+                       case 2: excluirContato();break;
+                       case 3: pesquisarContato();break;
                  }
          }
     }
@@ -214,14 +249,6 @@ public class Test extends MIDlet implements CommandListener {
     }
 
     private void pesquisarContato() {
-        this.formBucarContato();
-        Display.getDisplay(this).setCurrent(this.buscarContatoForm);
-        
+        this.formBucarContato();      
     }
-
- 
-    
 }
-
-
-// this.apresentaContato.setLabel("Nome: " + contato.getNome() + "\nTwitter : " + contato.getTwitter());

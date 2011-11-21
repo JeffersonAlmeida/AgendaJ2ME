@@ -73,9 +73,10 @@ public class ContatoDaoImpl implements ContatoDao {
         }    
     }
 
-    public void listarTodos() {
+    public Vector listarTodos() {
         Banco banco = Banco.getInstance();
-        Vector contatos = new Vector(); 
+        Vector contatos = new Vector(); // Vetor de Strings por enquanto
+        
         try {
             banco.openRecStore();
             RecordStore recordStore = banco.getRecordStore();
@@ -83,14 +84,16 @@ public class ContatoDaoImpl implements ContatoDao {
             while ( enum.hasNextElement()) {
                 //armazena o próximo registro em um String
                 String contato = new String(enum.nextRecord());
-                System.out.println(contato);
-                contato.indexOf(";");
+                contatos.addElement(contato);
+                
+                System.out.println(contato);               
             }
         } catch (Exception ex) {
             ex.printStackTrace();
         }finally{
             banco.closeRecStore();
-        }    
+            return contatos;
+        }  
     }
     
     
