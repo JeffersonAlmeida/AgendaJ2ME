@@ -9,19 +9,19 @@ package model;
  * @author Jefferson
  */
 public class Contato {
-    
+
     private String nome;
     private String twitter;
-    
-    public Contato(){
+
+    public Contato() {
         super();
     }
-    
-    public Contato(String nome, String twitter){
+
+    public Contato(String nome, String twitter) {
         this.nome = nome;
         this.twitter = twitter;
     }
-    
+
     public String getNome() {
         return nome;
     }
@@ -37,6 +37,12 @@ public class Contato {
     public void setTwitter(String twitter) {
         this.twitter = twitter;
     }
-    
-    
+
+    public void imprimeContato() {
+        System.out.println(this.toString());
+    }
+
+    public String toString() {
+        return "Contato{" + "nome=" + nome + ", twitter=" + twitter + '}';
+    }
 }

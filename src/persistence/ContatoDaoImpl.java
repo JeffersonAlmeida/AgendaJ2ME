@@ -75,7 +75,7 @@ public class ContatoDaoImpl implements ContatoDao {
 
     public Vector listarTodos() {
         Banco banco = Banco.getInstance();
-        Vector contatos = new Vector(); // Vetor de Strings por enquanto
+        Vector contatosVector = new Vector(); // Vetor de Strings por enquanto
         
         try {
             banco.openRecStore();
@@ -83,20 +83,51 @@ public class ContatoDaoImpl implements ContatoDao {
             RecordEnumeration enum = recordStore.enumerateRecords(null, null, false);
             while ( enum.hasNextElement()) {
                 //armazena o próximo registro em um String
-                String contato = new String(enum.nextRecord());
-                contatos.addElement(contato);
+                String contatoInteiro = new String(enum.nextRecord());
+                String[] contatoQuebrado = this.split(contatoInteiro);
                 
-                System.out.println(contato);               
+                Contato c = new Contato(contatoQuebrado[0], contatoQuebrado[1]);
+                
+                c.imprimeContato();
+                
+                contatosVector.addElement(c);
+             
+                             
             }
         } catch (Exception ex) {
             ex.printStackTrace();
         }finally{
             banco.closeRecStore();
-            return contatos;
+            return contatosVector;
         }  
     }
     
-    
+    // metodo em para quebrar a string e retornar um vetor de strings
+     private String[] split(String original) {
+            
+                Vector nodes = new Vector();
+                String separator = ";";
+                System.out.println("split start...................");
+                // Parse nodes into vector
+                int index = original.indexOf(separator);
+                while(index>=0){
+                        nodes.addElement( original.substring(0, index) );
+                        original = original.substring(index+separator.length());
+                        index = original.indexOf(separator);
+                }
+                // Get the last node
+                nodes.addElement( original );
+                // Create splitted string array
+                String[] result = new String[ nodes.size() ];
+                if( nodes.size()>0 ) {
+                        for(int loop=0; loop<nodes.size(); loop++){
+                            result[loop] = (String)nodes.elementAt(loop);
+                            System.out.println(result[loop]);
+                        }
+                }
+                return result;
+                
+        }
   
     
 }

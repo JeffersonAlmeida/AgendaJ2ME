@@ -18,6 +18,7 @@ import javax.microedition.lcdui.ItemCommandListener;
 import javax.microedition.lcdui.List;
 import javax.microedition.lcdui.StringItem;
 import javax.microedition.lcdui.TextField;
+import javax.microedition.media.control.FramePositioningControl;
 import javax.microedition.midlet.*;
 import model.Contato;
 import persistence.ContatoDaoImpl;
@@ -151,7 +152,7 @@ public class Test extends MIDlet implements CommandListener {
         final TextField nomeBusca = new TextField("NOME: ", "", 15, TextField.ANY);
         
         ContatoDaoImpl contatoDaoImpl = new ContatoDaoImpl();
-        Vector contatos = contatoDaoImpl.listarTodos();
+        final Vector contatos = contatoDaoImpl.listarTodos(); // vetor de contatos (Contato)
         
         // Lista - de contatos
         List contatosList = new List("Contatos", Choice.IMPLICIT);
@@ -159,9 +160,9 @@ public class Test extends MIDlet implements CommandListener {
         // adiciona os contatos na lista.
         int i=0;
         while(i<contatos.size()){
-            String contato = (String) contatos.elementAt(i);
+            Contato contato = (Contato) contatos.elementAt(i);
             System.out.println(contato);
-            contatosList.append(contato, null);
+            contatosList.append(contato.getNome(), null);
             i++;
         }
         
@@ -188,6 +189,9 @@ public class Test extends MIDlet implements CommandListener {
                 }else if(c==exitCommand){
                     destroyApp(false);
                     notifyDestroyed();
+                }else{
+                     List down = (List)display.getCurrent();   
+                     mostraContatoNaTela((Contato)contatos.elementAt(down.getSelectedIndex()));
                 }
             }
         });
@@ -251,4 +255,46 @@ public class Test extends MIDlet implements CommandListener {
     private void pesquisarContato() {
         this.formBucarContato();      
     }
+    
+    
+    public void mostraContatoNaTela(Contato contato){
+        
+        Form mostraContatoNaTela = new Form("# Contato # ");
+        
+        //Comandos
+
+        final Command exitCommand = new Command("exit", Command.EXIT, 0); 
+        final Command comandoVoltar = new Command("Back", Command.BACK, 1);
+        final Command comandoAlterarContato = new Command("Alterar", Command.ITEM,2); 
+
+        mostraContatoNaTela.addCommand(comandoVoltar);
+        mostraContatoNaTela.addCommand(comandoAlterarContato);
+        mostraContatoNaTela.addCommand(exitCommand);
+
+        System.out.println("Mostra contato inteiro na tela do CellPHONE");
+        contato.imprimeContato();
+        TextField nome = new TextField("nome", contato.getNome(), 20, TextField.ANY);
+        TextField twitter = new TextField("twitter", contato.getTwitter(), 25, TextField.ANY);
+        
+        mostraContatoNaTela.append(nome);
+        mostraContatoNaTela.append(twitter);
+        
+        Display.getDisplay(this).setCurrent(mostraContatoNaTela);
+         
+        mostraContatoNaTela.setCommandListener(new CommandListener() {
+
+            public void commandAction(Command c, Displayable d) {
+                 if(c==comandoVoltar){
+                    formBucarContato();                  
+                 }else if(c==comandoAlterarContato){
+                     
+                 }else if(c==exitCommand){
+                      destroyApp(false);
+                      notifyDestroyed();
+                 }
+            }
+        });
+      
+    }
+    
 }
