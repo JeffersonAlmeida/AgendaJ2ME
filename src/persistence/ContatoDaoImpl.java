@@ -30,7 +30,7 @@ public class ContatoDaoImpl implements ContatoDao {
     }
 
     public void pesquisarContato(Contato c) {
-         Banco banco = Banco.getInstance();
+        Banco banco = Banco.getInstance();
         try {
             banco.openRecStore();           
             RecordStore recordStore = banco.getRecordStore();

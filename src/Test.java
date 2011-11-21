@@ -47,20 +47,24 @@ public class Test extends MIDlet implements CommandListener {
     
     
     // FORMULARIO DO MENU PRINCIPAL
-    public void formPrincipal() throws IOException{          
+    public void formPrincipal() throws IOException{        
+        
        this.incluirImage = Image.createImage("/imagem/incluir.png");       
        this.alterarImage = Image.createImage("/imagem/alterar.png");       
        this.excluirImage =  Image.createImage("/imagem/excluir.png");       
        this.pesquisarImage = Image.createImage("/imagem/pesquisar.png");    
-       this.exitCommand = new Command("exit", Command.EXIT, 0);       
+       this.exitCommand = new Command("exit", Command.EXIT, 0);    
+       
        this.menu = new List("Agenda Menu", Choice.IMPLICIT);
        menu.append("INCLUIR", incluirImage);
        menu.append("ALTERAR", alterarImage);
        menu.append("EXCLUIR", excluirImage);
-       menu.append("PESQUISAR", pesquisarImage);       
+       menu.append("PESQUISAR", pesquisarImage);      
+       
        menu.addCommand(exitCommand);
        menu.setCommandListener(this);   
-       Display.getDisplay(this).setCurrent(menu);       
+       Display.getDisplay(this).setCurrent(menu);    
+       
     }
       // FORMULARIO DO CONTATO     NOME, TEL, EMAIL, TWITTER      
 
@@ -68,37 +72,96 @@ public class Test extends MIDlet implements CommandListener {
 
             this.nome = new TextField("nome", null, 20, TextField.ANY);
             this.twitter = new TextField("twitter", null, 25, TextField.ANY);
-            this.salvarCommand = new Command("Salvar", Command.OK,1);
-            this.cancelCommand = new Command("Cancelar", Command.CANCEL, 2);        
+            
+            // Comandos
+            
+            final Command comandoVoltar = new Command("Back", Command.BACK, 0);
+            final Command salvarCommand = new Command("Salvar", Command.OK,1);
+            final Command exitCommand = new Command("exit", Command.EXIT, 2);
+            
             this.inserirContatoForm = new Form("Inserir Contato");
             this.inserirContatoForm.append(this.nome);
             this.inserirContatoForm.append(this.twitter);
-            this.inserirContatoForm.addCommand(exitCommand);   
+            
+            this.inserirContatoForm.addCommand(comandoVoltar);   
             this.inserirContatoForm.addCommand(salvarCommand);
-            this.inserirContatoForm.addCommand(cancelCommand);
-            this.inserirContatoForm.setCommandListener(this);
-            Display.getDisplay(this).setCurrent(inserirContatoForm);      
+            this.inserirContatoForm.addCommand(exitCommand); 
+            
+            this.inserirContatoForm.setCommandListener(new CommandListener() { 
+            public void commandAction(Command c, Displayable d) {
+               if(c==comandoVoltar){
+                    Display.getDisplay(getThis()).setCurrent(menu);  
+               }else if(c==salvarCommand){
+                    salvarContato();                  
+                    Display.getDisplay(getThis()).setCurrent(apresentaContatoForm);
+               }else if(c==exitCommand){
+                   destroyApp(false);
+                   notifyDestroyed();
+               }
+            }
+        });
+               
     } 
+      
     // FORMULARIO PARA APRESENTAR O CONTATO DEPOIS DE INSERIDO!
     public void formApresentao(Contato c){
+        
+        // Comandos
+        final Command exitCommand = new Command("exit", Command.EXIT, 0);
+        final Command comandoVoltar = new Command("Back", Command.BACK, 1);
+        final Command comandoAlterarContato = new Command("Alterar", Command.ITEM, 2);   
+        
+        
         this.apresentaContatoForm = new Form("Contato Inserido!");
         this.apresentaContato = new StringItem("Nome: " + c.getNome() + "\nTwitter: "+c.getTwitter(), "");
         this.apresentaContatoForm.append(this.apresentaContato);
-        this.apresentaContatoForm.addCommand(exitCommand);
-        this.apresentaContatoForm.setCommandListener(this);
+        
+        this.apresentaContatoForm.addCommand(comandoVoltar);
+        this.apresentaContatoForm.addCommand(comandoAlterarContato);
+        this.apresentaContatoForm.addCommand(exitCommand);      
+      
+        this.apresentaContatoForm.setCommandListener(new CommandListener() {
+            public void commandAction(Command c, Displayable d) {
+               if(c==comandoVoltar){
+                 Display.getDisplay(getThis()).setCurrent(inserirContatoForm);  
+               }else if(c==comandoAlterarContato){
+                   // Implementar
+               }
+            }
+        });
+    }
+    
+    public MIDlet getThis(){
+        return this;
     }
     
     // FORMULARIO PARA BUSCAR POR NOME
     
-    public void formBucarContato(){        
+    public void formBucarContato(){      
+        
+        // Comandos
+        final Command exitCommand = new Command("exit", Command.EXIT, 0);
         final Command commandoBuscar = new Command("Buscar", Command.OK, 1);        
+        
         final TextField nomeBusca = new TextField("NOME: ", "", 15, TextField.ANY);
         this.buscarContatoForm = new Form("BUSCAR");
+        
+        List contatosList = new List("Contatos", Choice.IMPLICIT);
+        
+        /*
+         this.menu = new List("Agenda Menu", Choice.IMPLICIT);
+           menu.append("INCLUIR", incluirImage);
+           menu.append("ALTERAR", alterarImage);
+           menu.append("EXCLUIR", excluirImage);
+           menu.append("PESQUISAR", pesquisarImage);   */ 
+
         this.buscarContatoForm.append(nomeBusca);
+        
         this.buscarContatoForm.addCommand(exitCommand);
         this.buscarContatoForm.addCommand(commandoBuscar);
+        
         this.buscarContatoForm.setCommandListener(new CommandListener() {
-            public void commandAction(Command c, Displayable d) {
+        public void commandAction(Command c, Displayable d) {
                 if(c==commandoBuscar){
                     String nome = nomeBusca.getString().trim();
                     ContatoDaoImpl contatoDaoImpl = new ContatoDaoImpl();
@@ -132,17 +195,16 @@ public class Test extends MIDlet implements CommandListener {
                 destroyApp(false);
                 notifyDestroyed();
           }else if (c == salvarCommand){
-              this.salvarContato();                  
-              Display.getDisplay(this).setCurrent(apresentaContatoForm);
+             
           }else if(c==cancelCommand){
               
           }else{
                  List down = (List)display.getCurrent();
                  switch(down.getSelectedIndex()) {
-                   case 0: incluirContato();break;
-                   case 1: alterarContato();break;
-                   case 2: excluirContato();break;
-                   case 3: pesquisarContato();break;
+                       case 0: incluirContato();break;
+                       case 1: alterarContato();break;
+                       case 2: excluirContato();break;
+                       case 3: pesquisarContato();break;
                  }
          }
     }

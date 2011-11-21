@@ -39,7 +39,7 @@ public class ContatoDaoImpl implements ContatoDao {
                 //armazena o próximo registro em um String
                 String contatoString = new String(enum.nextRecord());
                 System.out.println("Contato:: " + contatoString);
-                contatoString.indexOf(";");
+                
             }            
             
         } catch (Exception ex) {
