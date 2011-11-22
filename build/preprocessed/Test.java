@@ -139,10 +139,11 @@ public class Test extends MIDlet implements CommandListener {
     
     // FORMULARIO PARA BUSCAR POR NOME
     
-    public void formBucarContato(){      
+    public void formListarTodos(){      
         
         // Comandos
-        final Command exitCommand = new Command("exit", Command.EXIT, 0);
+        
+        final Command comandoRemover = new Command("Remover", Command.ITEM, 1);
         final Command commandoBuscar = new Command("Buscar", Command.OK, 1);    
         final Command comandoVoltar = new Command("Back", Command.BACK, 2);
         final Command comandoAlterarContato = new Command("Alterar", Command.ITEM, 3); 
@@ -166,10 +167,12 @@ public class Test extends MIDlet implements CommandListener {
             i++;
         }
         
-        contatosList.addCommand(commandoBuscar);
         contatosList.addCommand(comandoVoltar);
+        contatosList.addCommand(comandoRemover);
+        contatosList.addCommand(commandoBuscar);
+      
         contatosList.addCommand(comandoAlterarContato);
-        contatosList.addCommand(exitCommand);
+       
         
         Display.getDisplay(this).setCurrent(contatosList); 
                 
@@ -184,17 +187,34 @@ public class Test extends MIDlet implements CommandListener {
                     contatoDaoImpl.pesquisarContato(contato);
                 }else if(c==comandoVoltar){
                      Display.getDisplay(getThis()).setCurrent(menu);  
-                }else if(c==comandoAlterarContato){
-                    // implementar
                 }else if(c==exitCommand){
                     destroyApp(false);
                     notifyDestroyed();
+                }else if(c==comandoRemover){
+                      List down = (List)display.getCurrent();   
+                    try {                      
+                        removeContato((Contato)contatos.elementAt(down.getSelectedIndex()));
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
                 }else{
                      List down = (List)display.getCurrent();   
-                     mostraContatoNaTela((Contato)contatos.elementAt(down.getSelectedIndex()));
+                     mostraContatoNaTela((Contato)contatos.elementAt(down.getSelectedIndex()),down.getSelectedIndex());
                 }
             }
+
         });
+    }
+    
+    public void removeContato(Contato c) throws IOException {
+            System.out.println("Remover Contato!");
+            ContatoDaoImpl contatoDaoImpl = new ContatoDaoImpl();
+            contatoDaoImpl.excluirContato(c);
+            formPrincipal();
+    }
+    public void updateContato(Contato c, int posicao){
+         ContatoDaoImpl  contatoDaoImpl = new ContatoDaoImpl();
+         contatoDaoImpl.alterarContato(c, posicao);
     }
         
     public void startApp() {    
@@ -245,19 +265,19 @@ public class Test extends MIDlet implements CommandListener {
     }
 
     private void alterarContato() {
-       
+        this.formListarTodos();
     }
 
     private void excluirContato() {
-       
+         this.formListarTodos();
     }
 
     private void pesquisarContato() {
-        this.formBucarContato();      
+        this.formListarTodos();      
     }
     
     
-    public void mostraContatoNaTela(Contato contato){
+    public void mostraContatoNaTela(final Contato contato, final int posicaoNoRecordStore){
         
         Form mostraContatoNaTela = new Form("# Contato # ");
         
@@ -285,9 +305,9 @@ public class Test extends MIDlet implements CommandListener {
 
             public void commandAction(Command c, Displayable d) {
                  if(c==comandoVoltar){
-                    formBucarContato();                  
+                    formListarTodos();                  
                  }else if(c==comandoAlterarContato){
-                     
+                       updateContato(contato, posicaoNoRecordStore);
                  }else if(c==exitCommand){
                       destroyApp(false);
                       notifyDestroyed();

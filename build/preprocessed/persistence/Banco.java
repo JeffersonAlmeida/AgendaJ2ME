@@ -12,7 +12,7 @@ import javax.microedition.rms.RecordStore;
  */
 public class Banco {
     
-    private static Banco banco; 
+    private static Banco banco; // design pattern sigleton.
     private RecordStore recordStore;
     static final String REC_STORE = "AGENDA";
     
@@ -87,9 +87,9 @@ public class Banco {
             }
       }
        
-   public void readRecords() {
+    public void readRecords() {
             try
-            {
+             {
               // Intentionally make this too small to test code below
               byte[] recData = new byte[5]; 
               int len;

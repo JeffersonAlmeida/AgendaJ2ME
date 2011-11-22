@@ -49,11 +49,34 @@ public class ContatoDaoImpl implements ContatoDao {
         }    
     }
 
-    public void alterarContato(Contato c) {
+    public void alterarContato(Contato c, int posicao) {
         Banco banco = Banco.getInstance();
         try {
+            
             banco.openRecStore();
             // do something
+            RecordStore recordStore = banco.getRecordStore();
+            
+            String contato = c.getNome()+";"+c.getTwitter();
+            byte[] contatoByte = contato.getBytes();
+            
+            
+            
+            recordStore.setRecord(posicao, contatoByte, 0, contatoByte.length);
+            
+           
+            
+            System.out.println("Acho que alterou o contato");
+                    
+            /*
+            * 
+            *  recordId - the ID of the record to use in this operation
+            newData - the new data to store in the record
+            offset - the index into the data buffer of the first relevant byte for this record
+            numBytes - the number of bytes of the data buffer to use for this record
+
+            */            
+            
         } catch (Exception ex) {
             ex.printStackTrace();
         }finally{
@@ -65,7 +88,10 @@ public class ContatoDaoImpl implements ContatoDao {
         Banco banco = Banco.getInstance();
         try {
             banco.openRecStore();
-            // do something
+            // do something            
+            RecordStore recordStore = banco.getRecordStore();
+            String contatoCompleto = c.getNome()+";"+c.getTwitter();
+            RecordStore.deleteRecordStore(contatoCompleto);                    
         } catch (Exception ex) {
             ex.printStackTrace();
         }finally{
