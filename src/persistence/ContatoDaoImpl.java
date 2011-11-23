@@ -21,10 +21,12 @@ public class ContatoDaoImpl implements ContatoDao {
         Banco banco = Banco.getInstance();
         try {
             banco.openRecStore();
-            banco.writeRecord(c.getNome()+";"+c.getTwitter());
+            banco.writeRecord(c.getNome()+";"+c.getTwitter()+";"+c.getId());
         } catch (Exception ex) {
             ex.printStackTrace();
         }finally{
+            System.out.println("Contato Inserido: ");
+            c.imprimeContato();
             banco.closeRecStore();
         }        
     }
@@ -85,13 +87,15 @@ public class ContatoDaoImpl implements ContatoDao {
     }
 
     public void excluirContato(Contato c) {
+        
+        System.out.println("Vamos Exluir o contato :: " + "ID/posicao : " + c.getId());
+        c.imprimeContato();
         Banco banco = Banco.getInstance();
         try {
             banco.openRecStore();
             // do something            
             RecordStore recordStore = banco.getRecordStore();
-            String contatoCompleto = c.getNome()+";"+c.getTwitter();
-            RecordStore.deleteRecordStore(contatoCompleto);                    
+            recordStore.deleteRecord(c.getId());            
         } catch (Exception ex) {
             ex.printStackTrace();
         }finally{
@@ -107,18 +111,15 @@ public class ContatoDaoImpl implements ContatoDao {
             banco.openRecStore();
             RecordStore recordStore = banco.getRecordStore();
             RecordEnumeration enum = recordStore.enumerateRecords(null, null, false);
-            while ( enum.hasNextElement()) {
+            System.out.println("\nListar Todos os Contatos :: \n");
+            while ( enum.hasNextElement()){
                 //armazena o próximo registro em um String
                 String contatoInteiro = new String(enum.nextRecord());
-                String[] contatoQuebrado = this.split(contatoInteiro);
-                
-                Contato c = new Contato(contatoQuebrado[0], contatoQuebrado[1]);
-                
-                c.imprimeContato();
-                
-                contatosVector.addElement(c);
-             
-                             
+                String[] contatoQuebrado = this.split(contatoInteiro);                
+                Contato c = new Contato(contatoQuebrado[0], contatoQuebrado[1]);    
+                c.setId(Integer.parseInt(contatoQuebrado[2]));
+                c.imprimeContato();               
+                contatosVector.addElement(c); 
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -133,7 +134,6 @@ public class ContatoDaoImpl implements ContatoDao {
             
                 Vector nodes = new Vector();
                 String separator = ";";
-                System.out.println("split start...................");
                 // Parse nodes into vector
                 int index = original.indexOf(separator);
                 while(index>=0){
@@ -148,11 +148,9 @@ public class ContatoDaoImpl implements ContatoDao {
                 if( nodes.size()>0 ) {
                         for(int loop=0; loop<nodes.size(); loop++){
                             result[loop] = (String)nodes.elementAt(loop);
-                            System.out.println(result[loop]);
                         }
                 }
-                return result;
-                
+                return result;     
         }
   
     

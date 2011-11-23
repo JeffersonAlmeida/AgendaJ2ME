@@ -9,7 +9,8 @@ package model;
  * @author Jefferson
  */
 public class Contato {
-
+    
+    private int id;
     private String nome;
     private String twitter;
 
@@ -19,7 +20,7 @@ public class Contato {
 
     public Contato(String nome, String twitter) {
         this.nome = nome;
-        this.twitter = twitter;
+        this.twitter = twitter;       
     }
 
     public String getNome() {
@@ -43,6 +44,16 @@ public class Contato {
     }
 
     public String toString() {
-        return "Contato{" + "nome=" + nome + ", twitter=" + twitter + '}';
+        return "Contato{" + "id=" + id + ", nome=" + nome + ", twitter=" + twitter + '}';
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+    
+    
 }

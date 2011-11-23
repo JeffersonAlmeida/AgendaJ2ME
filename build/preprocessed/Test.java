@@ -28,6 +28,7 @@ import persistence.ContatoDaoImpl;
  */
 public class Test extends MIDlet implements CommandListener {
     
+    private int contadorContatos =0;
     private Display display;
     private Form inserirContatoForm, apresentaContatoForm, buscarContatoForm;
     private Command exitCommand, salvarCommand, cancelCommand;
@@ -94,7 +95,8 @@ public class Test extends MIDlet implements CommandListener {
                if(c==comandoVoltar){
                     Display.getDisplay(getThis()).setCurrent(menu);  
                }else if(c==salvarCommand){
-                    salvarContato();                  
+                    Contato contato = new Contato(nome.getString().trim(), twitter.getString().trim());
+                    salvarContato(contato);                  
                     Display.getDisplay(getThis()).setCurrent(apresentaContatoForm);
                }else if(c==exitCommand){
                    destroyApp(false);
@@ -190,13 +192,6 @@ public class Test extends MIDlet implements CommandListener {
                 }else if(c==exitCommand){
                     destroyApp(false);
                     notifyDestroyed();
-                }else if(c==comandoRemover){
-                      List down = (List)display.getCurrent();   
-                    try {                      
-                        removeContato((Contato)contatos.elementAt(down.getSelectedIndex()));
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
                 }else{
                      List down = (List)display.getCurrent();   
                      mostraContatoNaTela((Contato)contatos.elementAt(down.getSelectedIndex()),down.getSelectedIndex());
@@ -206,12 +201,7 @@ public class Test extends MIDlet implements CommandListener {
         });
     }
     
-    public void removeContato(Contato c) throws IOException {
-            System.out.println("Remover Contato!");
-            ContatoDaoImpl contatoDaoImpl = new ContatoDaoImpl();
-            contatoDaoImpl.excluirContato(c);
-            formPrincipal();
-    }
+  
     public void updateContato(Contato c, int posicao){
          ContatoDaoImpl  contatoDaoImpl = new ContatoDaoImpl();
          contatoDaoImpl.alterarContato(c, posicao);
@@ -252,8 +242,9 @@ public class Test extends MIDlet implements CommandListener {
          }
     }
 
-    public void salvarContato(){
-        Contato contato = new Contato(this.nome.getString().trim(), this.twitter.getString().trim());
+    public void salvarContato(Contato contato){
+        setContadorContatos(getContadorContatos()+1);   
+        contato.setId(getContadorContatos());
         ContatoDaoImpl contatoDaoImpl = new ContatoDaoImpl();
         contatoDaoImpl.incluirContato(contato);
         formApresentao(contato);
@@ -269,7 +260,7 @@ public class Test extends MIDlet implements CommandListener {
     }
 
     private void excluirContato() {
-         this.formListarTodos();
+        this.formularioDeExclsao();
     }
 
     private void pesquisarContato() {
@@ -316,5 +307,61 @@ public class Test extends MIDlet implements CommandListener {
         });
       
     }
+
+    public void formularioDeExclsao(){
+        
+        System.out.println("Formulario de Exclusao");
+        
+        final Command comandoVoltar = new Command("Back", Command.BACK, 0);
+
+        
+        ContatoDaoImpl contatoDaoImpl = new ContatoDaoImpl();
+        final Vector contatos = contatoDaoImpl.listarTodos(); // vetor de contatos (Contato)
+        
+        // Lista - de contatos
+        List contatosList = new List("Contatos", Choice.IMPLICIT);
+        
+        // adiciona os contatos na lista.
+        int i=0;
+        System.out.println("Todos os Contatos :: ");
+        while(i<contatos.size()){
+            Contato contato = (Contato) contatos.elementAt(i);
+            contato.imprimeContato();
+            contatosList.append(contato.getNome(), null);
+            i++;
+        }
+        
+        contatosList.addCommand(comandoVoltar);
+        Display.getDisplay(this).setCurrent(contatosList); 
+                
+        contatosList.setCommandListener(new CommandListener() {
+
+            public void commandAction(Command c, Displayable d) {
+                if(c==comandoVoltar){
+                    try {
+                        formPrincipal();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }else{
+                     List down = (List)display.getCurrent();   
+                     ContatoDaoImpl contatoDaoImpl = new ContatoDaoImpl();
+                     Contato contato = (Contato) contatos.elementAt(down.getSelectedIndex());
+                     contatoDaoImpl.excluirContato(contato);
+                     formularioDeExclsao();
+                   }                   
+           }
+        });
+        
+    }
+
+    public int getContadorContatos() {
+        return contadorContatos;
+    }
+
+    public void setContadorContatos(int contadorContatos) {
+        this.contadorContatos = contadorContatos;
+    }
+    
     
 }
