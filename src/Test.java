@@ -263,7 +263,7 @@ public class Test extends MIDlet implements CommandListener {
     }
 
     private void pesquisarContato() {
-        this.formListarTodos();      
+      this.formularioBuscarContato();      
     }
     
     
@@ -308,7 +308,50 @@ public class Test extends MIDlet implements CommandListener {
         });
       
     }
+    
+    
+    public void formularioBuscarContato(){
+        
+        final TextField buscar = new TextField("Buscar", null, 20, TextField.ANY);
+        final Command comandoVoltar = new Command("Back", Command.BACK, 0);
+        final Command comandoBuscar = new Command("Buscar", Command.OK, 1);
+        
+        Form formBuscar = new Form("Buscar Contato");
+        formBuscar.addCommand(comandoVoltar);
+        formBuscar.addCommand(comandoBuscar);
+        
+        formBuscar.append(buscar);
+        
+        Display.getDisplay(this).setCurrent(formBuscar);
+        
+        formBuscar.setCommandListener(new CommandListener() {
 
+            public void commandAction(Command c, Displayable d) {
+                if(c==comandoVoltar){
+                    try {
+                        formPrincipal();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }else if(c==comandoBuscar){
+                    System.out.println("Implementar Buscar !! ");
+                    ContatoDaoImpl contatoDaoImpl = new ContatoDaoImpl();
+                    Contato contato = new Contato();
+                    contato.setNome(buscar.getString().toLowerCase().trim());
+                    Contato contatoRetorno = contatoDaoImpl.pesquisarContato(contato);
+                    verificaContato(contatoRetorno);
+                }               
+            }
+        });   
+    }
+            
+    public void verificaContato(Contato contatoRetorno) {
+           if(contatoRetorno!=null){
+               mostraContatoNaTela(contatoRetorno);
+           }else{
+               System.out.println("Contato Não existe, mostrar alert na Tela !!");
+           }
+    }
     public void formularioDeExclsao(){
         
         System.out.println("Formulario de Exclusao");

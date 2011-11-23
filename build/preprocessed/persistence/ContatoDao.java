@@ -20,7 +20,7 @@ import model.Contato;
 public interface ContatoDao {
     
     public void incluirContato(Contato c);
-    public void pesquisarContato(Contato c);
+    public Contato pesquisarContato(Contato c);
     public void alterarContato(Contato c);
     public void excluirContato(Contato c);
     

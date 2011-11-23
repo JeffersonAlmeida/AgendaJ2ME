@@ -31,8 +31,9 @@ public class ContatoDaoImpl implements ContatoDao {
         }        
     }
 
-    public void pesquisarContato(Contato c) {
+    public Contato pesquisarContato(Contato contatoPesquisado) {
         Banco banco = Banco.getInstance();
+        Contato contatoRetorno = null;
         try {
             banco.openRecStore();           
             RecordStore recordStore = banco.getRecordStore();
@@ -42,12 +43,25 @@ public class ContatoDaoImpl implements ContatoDao {
                 String contatoString = new String(enum.nextRecord());
                 System.out.println("Contato:: " + contatoString);
                 
-            }            
-            
+                String[] contatoQuebrado = this.split(contatoString);                
+                Contato contato = new Contato(contatoQuebrado[0], contatoQuebrado[1]);    
+                contato.setId(Integer.parseInt(contatoQuebrado[2]));
+                
+                System.out.println(": Comparar Contatos :: \n");
+                
+                System.out.println("\n Contato pesquisado : \n");
+                contatoPesquisado.imprimeContato();
+                System.out.println("\n Contato 2: \n");
+                contato.imprimeContato();                
+                if(contatoPesquisado.getNome().equals(contato.getNome())){
+                    contatoRetorno = contato;
+                }          
+            }     
         } catch (Exception ex) {
             ex.printStackTrace();
         }finally{
             banco.closeRecStore();
+            return contatoRetorno;
         }    
     }
 
