@@ -51,21 +51,16 @@ public class ContatoDaoImpl implements ContatoDao {
         }    
     }
 
-    public void alterarContato(Contato c, int posicao) {
+    public void alterarContato(Contato c) {
         Banco banco = Banco.getInstance();
         try {
             
             banco.openRecStore();
             // do something
-            RecordStore recordStore = banco.getRecordStore();
-            
-            String contato = c.getNome()+";"+c.getTwitter();
+            RecordStore recordStore = banco.getRecordStore();            
+            String contato = c.getNome()+";"+c.getTwitter()+";"+c.getId();
             byte[] contatoByte = contato.getBytes();
-            
-            
-            
-            recordStore.setRecord(posicao, contatoByte, 0, contatoByte.length);
-            
+            recordStore.setRecord(c.getId(), contatoByte, 0, contatoByte.length);      
            
             
             System.out.println("Acho que alterou o contato");
@@ -111,7 +106,7 @@ public class ContatoDaoImpl implements ContatoDao {
             banco.openRecStore();
             RecordStore recordStore = banco.getRecordStore();
             RecordEnumeration enum = recordStore.enumerateRecords(null, null, false);
-            System.out.println("Listar Todos os Contatos :: ");
+            System.out.println("\nListar Todos os Contatos :: \n");
             while ( enum.hasNextElement()){
                 //armazena o próximo registro em um String
                 String contatoInteiro = new String(enum.nextRecord());

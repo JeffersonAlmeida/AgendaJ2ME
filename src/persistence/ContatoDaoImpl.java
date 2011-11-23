@@ -51,21 +51,16 @@ public class ContatoDaoImpl implements ContatoDao {
         }    
     }
 
-    public void alterarContato(Contato c, int posicao) {
+    public void alterarContato(Contato c) {
         Banco banco = Banco.getInstance();
         try {
             
             banco.openRecStore();
             // do something
-            RecordStore recordStore = banco.getRecordStore();
-            
-            String contato = c.getNome()+";"+c.getTwitter();
+            RecordStore recordStore = banco.getRecordStore();            
+            String contato = c.getNome()+";"+c.getTwitter()+";"+c.getId();
             byte[] contatoByte = contato.getBytes();
-            
-            
-            
-            recordStore.setRecord(posicao, contatoByte, 0, contatoByte.length);
-            
+            recordStore.setRecord(c.getId(), contatoByte, 0, contatoByte.length);      
            
             
             System.out.println("Acho que alterou o contato");

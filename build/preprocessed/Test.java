@@ -164,7 +164,6 @@ public class Test extends MIDlet implements CommandListener {
         int i=0;
         while(i<contatos.size()){
             Contato contato = (Contato) contatos.elementAt(i);
-            System.out.println(contato);
             contatosList.append(contato.getNome(), null);
             i++;
         }
@@ -194,7 +193,7 @@ public class Test extends MIDlet implements CommandListener {
                     notifyDestroyed();
                 }else{
                      List down = (List)display.getCurrent();   
-                     mostraContatoNaTela((Contato)contatos.elementAt(down.getSelectedIndex()),down.getSelectedIndex());
+                     mostraContatoNaTela((Contato)contatos.elementAt(down.getSelectedIndex()));
                 }
             }
 
@@ -202,9 +201,9 @@ public class Test extends MIDlet implements CommandListener {
     }
     
   
-    public void updateContato(Contato c, int posicao){
+    public void updateContato(Contato c){
          ContatoDaoImpl  contatoDaoImpl = new ContatoDaoImpl();
-         contatoDaoImpl.alterarContato(c, posicao);
+         contatoDaoImpl.alterarContato(c);
     }
         
     public void startApp() {    
@@ -268,10 +267,9 @@ public class Test extends MIDlet implements CommandListener {
     }
     
     
-    public void mostraContatoNaTela(final Contato contato, final int posicaoNoRecordStore){
+    public void mostraContatoNaTela(final Contato contato){
         
-        Form mostraContatoNaTela = new Form("# Contato # ");
-        
+        Form mostraContatoNaTela = new Form("# Contato # ");        
         //Comandos
 
         final Command exitCommand = new Command("exit", Command.EXIT, 0); 
@@ -284,8 +282,8 @@ public class Test extends MIDlet implements CommandListener {
 
         System.out.println("Mostra contato inteiro na tela do CellPHONE");
         contato.imprimeContato();
-        TextField nome = new TextField("nome", contato.getNome(), 20, TextField.ANY);
-        TextField twitter = new TextField("twitter", contato.getTwitter(), 25, TextField.ANY);
+        final TextField nome = new TextField("nome", contato.getNome(), 20, TextField.ANY);
+        final TextField twitter = new TextField("twitter", contato.getTwitter(), 25, TextField.ANY);
         
         mostraContatoNaTela.append(nome);
         mostraContatoNaTela.append(twitter);
@@ -296,9 +294,12 @@ public class Test extends MIDlet implements CommandListener {
 
             public void commandAction(Command c, Displayable d) {
                  if(c==comandoVoltar){
-                    formListarTodos();                  
+                        formListarTodos();                  
                  }else if(c==comandoAlterarContato){
-                       updateContato(contato, posicaoNoRecordStore);
+                       contato.setNome(nome.getString());
+                       contato.setTwitter(twitter.getString());                       
+                       updateContato(contato);
+                       formListarTodos(); 
                  }else if(c==exitCommand){
                       destroyApp(false);
                       notifyDestroyed();
@@ -323,7 +324,7 @@ public class Test extends MIDlet implements CommandListener {
         
         // adiciona os contatos na lista.
         int i=0;
-        System.out.println("Todos os Contatos :: ");
+        System.out.println("\nTodos os Contatos ::\n");
         while(i<contatos.size()){
             Contato contato = (Contato) contatos.elementAt(i);
             contato.imprimeContato();
@@ -335,7 +336,6 @@ public class Test extends MIDlet implements CommandListener {
         Display.getDisplay(this).setCurrent(contatosList); 
                 
         contatosList.setCommandListener(new CommandListener() {
-
             public void commandAction(Command c, Displayable d) {
                 if(c==comandoVoltar){
                     try {
@@ -351,8 +351,7 @@ public class Test extends MIDlet implements CommandListener {
                      formularioDeExclsao();
                    }                   
            }
-        });
-        
+        });        
     }
 
     public int getContadorContatos() {

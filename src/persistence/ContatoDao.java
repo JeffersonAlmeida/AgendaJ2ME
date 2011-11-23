@@ -21,7 +21,7 @@ public interface ContatoDao {
     
     public void incluirContato(Contato c);
     public void pesquisarContato(Contato c);
-    public void alterarContato(Contato c, int posicao);
+    public void alterarContato(Contato c);
     public void excluirContato(Contato c);
     
     public Vector listarTodos();
