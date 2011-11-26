@@ -1,5 +1,4 @@
-MIDlet-2: Test, , Test
-MIDlet-1: HELLO, , HELLO
+MIDlet-1: Test, ,view.Agenda
 MIDlet-Vendor: Vendor
 MIDlet-Name: appJ2me
 MIDlet-Version: 1.0
