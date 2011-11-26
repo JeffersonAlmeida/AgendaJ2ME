@@ -21,7 +21,7 @@ public class ContatoDaoImpl implements ContatoDao {
         Banco banco = Banco.getInstance();
         try {
             banco.openRecStore();
-            banco.writeRecord(c.getNome()+";"+c.getTwitter()+";"+c.getId());
+            banco.writeRecord(c.getNome()+";"+c.getFone()+";"+c.getCelular()+";"+c.getEmail()+";"+c.getId());
         } catch (Exception ex) {
             ex.printStackTrace();
         }finally{
@@ -44,8 +44,8 @@ public class ContatoDaoImpl implements ContatoDao {
                 System.out.println("Contato:: " + contatoString);
                 
                 String[] contatoQuebrado = this.split(contatoString);                
-                Contato contato = new Contato(contatoQuebrado[0], contatoQuebrado[1]);    
-                contato.setId(Integer.parseInt(contatoQuebrado[2]));
+                Contato contato = new Contato(contatoQuebrado[0], contatoQuebrado[1],contatoQuebrado[2],contatoQuebrado[3]);    
+                contato.setId(Integer.parseInt(contatoQuebrado[4]));
                 
                 System.out.println(": Comparar Contatos :: \n");
                 
@@ -72,22 +72,9 @@ public class ContatoDaoImpl implements ContatoDao {
             banco.openRecStore();
             // do something
             RecordStore recordStore = banco.getRecordStore();            
-            String contato = c.getNome()+";"+c.getTwitter()+";"+c.getId();
+            String contato = c.getNome()+";"+c.getFone()+";"+c.getCelular()+";"+c.getEmail()+";"+c.getId();
             byte[] contatoByte = contato.getBytes();
-            recordStore.setRecord(c.getId(), contatoByte, 0, contatoByte.length);      
-           
-            
-            System.out.println("Acho que alterou o contato");
-                    
-            /*
-            * 
-            *  recordId - the ID of the record to use in this operation
-            newData - the new data to store in the record
-            offset - the index into the data buffer of the first relevant byte for this record
-            numBytes - the number of bytes of the data buffer to use for this record
-
-            */            
-            
+            recordStore.setRecord(c.getId(), contatoByte, 0, contatoByte.length);
         } catch (Exception ex) {
             ex.printStackTrace();
         }finally{
@@ -96,8 +83,6 @@ public class ContatoDaoImpl implements ContatoDao {
     }
 
     public void excluirContato(Contato c) {
-        
-        System.out.println("Vamos Exluir o contato :: " + "ID/posicao : " + c.getId());
         c.imprimeContato();
         Banco banco = Banco.getInstance();
         try {
@@ -125,10 +110,10 @@ public class ContatoDaoImpl implements ContatoDao {
                 //armazena o próximo registro em um String
                 String contatoInteiro = new String(enum.nextRecord());
                 String[] contatoQuebrado = this.split(contatoInteiro);                
-                Contato c = new Contato(contatoQuebrado[0], contatoQuebrado[1]);    
-                c.setId(Integer.parseInt(contatoQuebrado[2]));
-                c.imprimeContato();               
-                contatosVector.addElement(c); 
+                Contato contato = new Contato(contatoQuebrado[0], contatoQuebrado[1],contatoQuebrado[2],contatoQuebrado[3]);    
+                contato.setId(Integer.parseInt(contatoQuebrado[4]));
+                contato.imprimeContato();               
+                contatosVector.addElement(contato); 
             }
         } catch (Exception ex) {
             ex.printStackTrace();

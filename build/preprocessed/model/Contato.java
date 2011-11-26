@@ -8,19 +8,24 @@ package model;
  *
  * @author Jefferson
  */
+
+/*
+ * •	Nome		:  50 caracteres
+•	Fone		:  8 caracteres
+•	Celular		:  8 caracteres
+•	Email		:  50 caracteres
+
+ */
 public class Contato {
     
     private int id;
     private String nome;
-    private String twitter;
+    private String fone;
+    private String celular;
+    private String email;
 
     public Contato() {
         super();
-    }
-
-    public Contato(String nome, String twitter) {
-        this.nome = nome;
-        this.twitter = twitter;       
     }
 
     public String getNome() {
@@ -31,20 +36,8 @@ public class Contato {
         this.nome = nome;
     }
 
-    public String getTwitter() {
-        return twitter;
-    }
-
-    public void setTwitter(String twitter) {
-        this.twitter = twitter;
-    }
-
     public void imprimeContato() {
         System.out.println(this.toString());
-    }
-
-    public String toString() {
-        return "Contato{" + "id=" + id + ", nome=" + nome + ", twitter=" + twitter + '}';
     }
 
     public int getId() {
@@ -53,6 +46,43 @@ public class Contato {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public Contato(String nome, String fone, String celular, String email) {
+        this.nome = nome;
+        this.fone = fone;
+        this.celular = celular;
+        this.email = email;
+    }
+
+    
+
+    public String getCelular() {
+        return celular;
+    }
+
+    public void setCelular(String celular) {
+        this.celular = celular;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getFone() {
+        return fone;
+    }
+
+    public void setFone(String fone) {
+        this.fone = fone;
+    }
+
+    public String toString() {
+        return "Contato{" + "id=" + id + ", nome=" + nome + ", fone=" + fone + ", celular=" + celular + ", email=" + email + '}';
     }
     
     

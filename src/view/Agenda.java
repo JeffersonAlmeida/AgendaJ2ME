@@ -8,6 +8,7 @@ package view;
 import java.io.IOException;
 import java.util.Vector;
 import javax.microedition.lcdui.Alert;
+import javax.microedition.lcdui.AlertType;
 import javax.microedition.lcdui.Choice;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
@@ -37,20 +38,17 @@ public class Agenda extends MIDlet implements CommandListener {
     private Command exitCommand, salvarCommand, cancelCommand;
     
     private TextField nome;
-    private TextField twitter;
+    private TextField fone;
+    private TextField celular;
+    private TextField email;
     
     private Image incluirImage;
-
-    private Image alterarImage;
-    
-    private Image excluirImage;
-    
-    private Image pesquisarImage;
-    
+    private Image alterarImage;   
+    private Image excluirImage;    
+    private Image pesquisarImage;    
     private StringItem apresentaContato;
     
-    private List menu;
-    
+    private List menu;   
     
     // FORMULARIO DO MENU PRINCIPAL
     public List getFormPrincipal() throws IOException{                
@@ -59,14 +57,12 @@ public class Agenda extends MIDlet implements CommandListener {
                this.alterarImage = Image.createImage("/imagem/alterar.png");       
                this.excluirImage =  Image.createImage("/imagem/excluir.png");       
                this.pesquisarImage = Image.createImage("/imagem/pesquisar.png");    
-               this.exitCommand = new Command("exit", Command.EXIT, 0);    
-
+               this.exitCommand = new Command("exit", Command.EXIT, 0);  
                this.menu = new List("Agenda Menu", Choice.IMPLICIT);
                menu.append("INCLUIR", incluirImage);
                menu.append("ALTERAR", alterarImage);
                menu.append("EXCLUIR", excluirImage);
-               menu.append("PESQUISAR", pesquisarImage);      
-
+               menu.append("PESQUISAR", pesquisarImage);
                menu.addCommand(exitCommand);
                menu.setCommandListener(this);   
        }       
@@ -77,67 +73,33 @@ public class Agenda extends MIDlet implements CommandListener {
 
       public void formularioContato(){
 
-            this.nome = new TextField("nome", null, 20, TextField.ANY);
-            this.twitter = new TextField("twitter", null, 25, TextField.ANY);
+            this.nome = new TextField("Nome", null, 15, TextField.ANY);
+            this.fone = new TextField("Fone", null, 15, TextField.PHONENUMBER);
+            this.celular = new TextField("Celular", null, 15, TextField.PHONENUMBER);
+            this.email = new TextField("Email", null, 15, TextField.EMAILADDR);
             
             // Comandos
             
             final Command comandoVoltar = new Command("Back", Command.BACK, 0);
             final Command salvarCommand = new Command("Salvar", Command.OK,1);
-            final Command exitCommand = new Command("exit", Command.EXIT, 2);
             
-            this.inserirContatoForm = new Form("Inserir Contato");
-            this.inserirContatoForm.append(this.nome);
-            this.inserirContatoForm.append(this.twitter);
+            inserirContatoForm = new Form("Inclusão de Contatos", new Item[]{nome, fone,celular, email});
             
             this.inserirContatoForm.addCommand(comandoVoltar);   
             this.inserirContatoForm.addCommand(salvarCommand);
-            this.inserirContatoForm.addCommand(exitCommand); 
             
             this.inserirContatoForm.setCommandListener(new CommandListener() { 
             public void commandAction(Command c, Displayable d) {
                if(c==comandoVoltar){
                     Display.getDisplay(getThis()).setCurrent(menu);  
                }else if(c==salvarCommand){
-                    Contato contato = new Contato(nome.getString().trim(), twitter.getString().trim());
+                    Contato contato = new Contato(nome.getString().trim(),fone.getString().trim(),celular.getString().trim(),email.getString().trim());
                     salvarContato(contato);                  
-                    //Display.getDisplay(getThis()).setCurrent(apresentaContatoForm);
-               }else if(c==exitCommand){
-                   destroyApp(false);
-                   notifyDestroyed();
                }
             }
         });
                
     } 
-      
-    // FORMULARIO PARA APRESENTAR O CONTATO DEPOIS DE INSERIDO!
-    public void formApresentao(Contato c){
-        
-        // Comandos
-        final Command exitCommand = new Command("exit", Command.EXIT, 0);
-        final Command comandoVoltar = new Command("Back", Command.BACK, 1);
-        final Command comandoAlterarContato = new Command("Alterar", Command.ITEM, 2);   
-        
-        
-        this.apresentaContatoForm = new Form("Contato Inserido!");
-        this.apresentaContato = new StringItem("Nome: " + c.getNome() + "\nTwitter: "+c.getTwitter(), "");
-        this.apresentaContatoForm.append(this.apresentaContato);
-        
-        this.apresentaContatoForm.addCommand(comandoVoltar);
-        this.apresentaContatoForm.addCommand(comandoAlterarContato);
-        this.apresentaContatoForm.addCommand(exitCommand);      
-      
-        this.apresentaContatoForm.setCommandListener(new CommandListener() {
-            public void commandAction(Command c, Displayable d) {
-               if(c==comandoVoltar){
-                 Display.getDisplay(getThis()).setCurrent(inserirContatoForm);  
-               }else if(c==comandoAlterarContato){
-                   // Implementar
-               }
-            }
-        });
-    }
     
     public MIDlet getThis(){
         return this;
@@ -282,14 +244,17 @@ public class Agenda extends MIDlet implements CommandListener {
         mostraContatoNaTela.addCommand(comandoVoltar);
         mostraContatoNaTela.addCommand(comandoAlterarContato);
         mostraContatoNaTela.addCommand(exitCommand);
-
-        System.out.println("Mostra contato inteiro na tela do CellPHONE");
         contato.imprimeContato();
-        final TextField nome = new TextField("nome", contato.getNome(), 20, TextField.ANY);
-        final TextField twitter = new TextField("twitter", contato.getTwitter(), 25, TextField.ANY);
+        
+        final TextField nome = new TextField("Nome", contato.getNome(),15, TextField.ANY);
+        final TextField fone = new TextField("Fone", contato.getFone(),15, TextField.PHONENUMBER);
+        final TextField celular = new TextField("Celular", contato.getCelular(), 15, TextField.PHONENUMBER);
+        final TextField email = new TextField("Email", contato.getEmail(),15, TextField.EMAILADDR);
         
         mostraContatoNaTela.append(nome);
-        mostraContatoNaTela.append(twitter);
+        mostraContatoNaTela.append(fone);
+        mostraContatoNaTela.append(celular);
+        mostraContatoNaTela.append(email);
         
         Display.getDisplay(this).setCurrent(mostraContatoNaTela);
          
@@ -299,8 +264,10 @@ public class Agenda extends MIDlet implements CommandListener {
                  if(c==comandoVoltar){
                         formListarTodos();                  
                  }else if(c==comandoAlterarContato){
-                       contato.setNome(nome.getString());
-                       contato.setTwitter(twitter.getString());                       
+                       contato.setNome(nome.getString().trim());
+                       contato.setFone(fone.toString().trim());
+                       contato.setCelular(celular.getString().trim());
+                       contato.setEmail(email.getString().trim());
                        updateContato(contato);
                        formListarTodos(); 
                  }else if(c==exitCommand){
@@ -333,11 +300,11 @@ public class Agenda extends MIDlet implements CommandListener {
                 if(c==comandoVoltar){
                     try {
                         getFormPrincipal();
+                        Display.getDisplay(getThis()).setCurrent(menu);
                     } catch (IOException ex) {
                         ex.printStackTrace();
                     }
                 }else if(c==comandoBuscar){
-                    System.out.println("Implementar Buscar !! ");
                     ContatoDaoImpl contatoDaoImpl = new ContatoDaoImpl();
                     Contato contato = new Contato();
                     contato.setNome(buscar.getString().toLowerCase().trim());
@@ -353,6 +320,10 @@ public class Agenda extends MIDlet implements CommandListener {
                mostraContatoNaTela(contatoRetorno);
            }else{
                System.out.println("Contato Não existe, mostrar alert na Tela !!");
+               Alert alert = new Alert("Aviso:", "Contato não encontrado.",null, AlertType.INFO);
+               alert.setTimeout(Alert.FOREVER);
+               trocaDisplayable(alert,menu);
+                
            }
     }
     public void formularioDeExclsao(){
@@ -386,6 +357,7 @@ public class Agenda extends MIDlet implements CommandListener {
                 if(c==comandoVoltar){
                     try {
                         getFormPrincipal();
+                        Display.getDisplay(getThis()).setCurrent(menu);
                     } catch (IOException ex) {
                         ex.printStackTrace();
                     }
@@ -393,13 +365,49 @@ public class Agenda extends MIDlet implements CommandListener {
                      List down = (List)display.getCurrent();   
                      ContatoDaoImpl contatoDaoImpl = new ContatoDaoImpl();
                      Contato contato = (Contato) contatos.elementAt(down.getSelectedIndex());
-                     contatoDaoImpl.excluirContato(contato);
-                     formularioDeExclsao();
+                     desejaExcluirContato(contato);
                    }                   
            }
         });        
     }
 
+    public void desejaExcluirContato(final Contato contato){
+        Form formDeExclusao = new Form("Excluir Contato");
+        
+        final Command back = new Command("Back", Command.BACK, 0);
+        final Command sim = new Command("Sim", Command.ITEM, 1);
+        final Command nao = new Command("Nao", contadorContatos, 2);
+        
+        final TextField nome = new TextField("Nome", contato.getNome(),15, TextField.UNEDITABLE);
+        final TextField fone = new TextField("Fone", contato.getFone(),15, TextField.UNEDITABLE);
+        final TextField celular = new TextField("Celular", contato.getCelular(), 15, TextField.UNEDITABLE);
+        final TextField email = new TextField("Email", contato.getEmail(),15, TextField.UNEDITABLE);
+        
+        formDeExclusao.append(nome);
+        formDeExclusao.append(fone);
+        formDeExclusao.append(celular);
+        formDeExclusao.append(email);
+    
+        formDeExclusao.addCommand(back);
+        formDeExclusao.addCommand(sim);
+        formDeExclusao.addCommand(nao);
+        Display.getDisplay(getThis()).setCurrent(formDeExclusao);
+        formDeExclusao.setCommandListener(new CommandListener() {
+
+            public void commandAction(Command c, Displayable d) {
+               if(c==back){
+                     formularioDeExclsao();
+               }else if(c==sim){
+                     ContatoDaoImpl contatoDaoImpl = new ContatoDaoImpl();
+                     contatoDaoImpl.excluirContato(contato);
+                     formularioDeExclsao();
+               }else if(c==nao){
+                     formularioDeExclsao();
+               }
+            }
+        });
+    }
+    
     public int getContadorContatos() {
         return contadorContatos;
     }
