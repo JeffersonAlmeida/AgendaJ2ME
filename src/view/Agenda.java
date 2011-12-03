@@ -76,7 +76,7 @@ public class Agenda extends MIDlet implements CommandListener {
             this.nome = new TextField("Nome", null, 15, TextField.ANY);
             this.fone = new TextField("Fone", null, 15, TextField.PHONENUMBER);
             this.celular = new TextField("Celular", null, 15, TextField.PHONENUMBER);
-            this.email = new TextField("Email", null, 15, TextField.EMAILADDR);
+            this.email = new TextField("Email", null, 50, TextField.EMAILADDR);
             
             // Comandos
             

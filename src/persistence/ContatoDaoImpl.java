@@ -9,6 +9,7 @@ import javax.microedition.rms.RecordEnumeration;
 import javax.microedition.rms.RecordStore;
 import javax.microedition.rms.RecordStoreException;
 import model.Contato;
+import model.SplitString;
 
 /**
  *
@@ -43,7 +44,7 @@ public class ContatoDaoImpl implements ContatoDao {
                 String contatoString = new String(enum.nextRecord());
                 System.out.println("Contato:: " + contatoString);
                 
-                String[] contatoQuebrado = this.split(contatoString);                
+                String[] contatoQuebrado = SplitString.getInstance().split(contatoString);                
                 Contato contato = new Contato(contatoQuebrado[0], contatoQuebrado[1],contatoQuebrado[2],contatoQuebrado[3]);    
                 contato.setId(Integer.parseInt(contatoQuebrado[4]));
                 
@@ -109,7 +110,7 @@ public class ContatoDaoImpl implements ContatoDao {
             while ( enum.hasNextElement()){
                 //armazena o próximo registro em um String
                 String contatoInteiro = new String(enum.nextRecord());
-                String[] contatoQuebrado = this.split(contatoInteiro);                
+                String[] contatoQuebrado = SplitString.getInstance().split(contatoInteiro);      
                 Contato contato = new Contato(contatoQuebrado[0], contatoQuebrado[1],contatoQuebrado[2],contatoQuebrado[3]);    
                 contato.setId(Integer.parseInt(contatoQuebrado[4]));
                 contato.imprimeContato();               
@@ -123,29 +124,7 @@ public class ContatoDaoImpl implements ContatoDao {
         }  
     }
     
-    // metodo em para quebrar a string e retornar um vetor de strings
-     private String[] split(String original) {
-            
-                Vector nodes = new Vector();
-                String separator = ";";
-                // Parse nodes into vector
-                int index = original.indexOf(separator);
-                while(index>=0){
-                        nodes.addElement( original.substring(0, index) );
-                        original = original.substring(index+separator.length());
-                        index = original.indexOf(separator);
-                }
-                // Get the last node
-                nodes.addElement( original );
-                // Create splitted string array
-                String[] result = new String[ nodes.size() ];
-                if( nodes.size()>0 ) {
-                        for(int loop=0; loop<nodes.size(); loop++){
-                            result[loop] = (String)nodes.elementAt(loop);
-                        }
-                }
-                return result;     
-        }
+    
   
     
 }

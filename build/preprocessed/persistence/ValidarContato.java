@@ -5,7 +5,7 @@
 package persistence;
 
 import excecoes.CellPhoneException;
-import excecoes.EmailException;
+import excecoes.DigitosException;
 import excecoes.HomePhoneException;
 import excecoes.SobrenomeException;
 import model.Contato;
@@ -36,8 +36,7 @@ public class ValidarContato {
     // barrreto -> invalido
     // barreto -> valido
     public void validarLetras(){
-        String nome = this.contato.getNome();
-        char[] caracteres = nome.toCharArray();
+        
     }
     
     public void validarFone()throws  HomePhoneException{
@@ -54,15 +53,17 @@ public class ValidarContato {
         }
     }
     
-    // jefferson@comp.ufu.br    
-    // jefferson   comp.com
-    public void validarEmail() throws EmailException{
-        String email = this.contato.getEmail();        
-        String[] palavras = SplitString.getInstance().split(email);
-        String[] dominio =  SplitString.getInstance().split(palavras[1]);        
-        if(!((palavras.length==2)&&(dominio.length>=2))){
-            throw new EmailException(this.contato);
-        }        
+    public void validarDigitos()throws DigitosException{
+        String fone = this.contato.getFone();
+        String cel = this.contato.getCelular();
+        
+        char[] caracteres = fone.toCharArray();
+     
+            
+    }
+    
+    public void validarEmail(){
+        
     }
             
     
