@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="build/preprocessed"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="dist/appJ2me.jar"/>
+	<classpathentry kind="lib" path="dist/nbrun2216520377943558510/appJ2me.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="output" path="build/preverifysrc"/>
+</classpath>

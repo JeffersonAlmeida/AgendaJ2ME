@@ -23,9 +23,7 @@ public class SobrenomeException extends Exception{
         this.contato = c;
     }
     
-    public void imprimeMsg(){
-        System.out.println("Não foi digitado o sobrenome de : " + this.contato.getNome());
+    public String toString() {
+        return "Não foi digitado o sobrenome de : " + this.contato.getNome()+"";
     }
-    
-    
 }

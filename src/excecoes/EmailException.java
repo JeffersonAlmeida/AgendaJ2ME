@@ -18,8 +18,9 @@ public class EmailException extends Exception{
         super("Email Exception!");
         this.contato = contato;
     }
-       
-    public void imprimeMsg(){
-        System.out.println("");
+
+    public String toString() {
+        return "Email Inválido!";
     }
+    
 }

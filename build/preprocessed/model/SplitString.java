@@ -26,10 +26,10 @@ public class SplitString {
     }
     
     // metodo em para quebrar a string e retornar um vetor de strings
-     public static String[] split(String original) {
+     public static String[] split(String original, String separa) {
             
                 Vector nodes = new Vector();
-                String separator = ";";
+                String separator = separa;
                 // Parse nodes into vector
                 int index = original.indexOf(separator);
                 while(index>=0){

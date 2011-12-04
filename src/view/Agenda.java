@@ -5,6 +5,7 @@ package view;
  * and open the template in the editor.
  */
 
+
 import java.io.IOException;
 import java.util.Vector;
 import javax.microedition.lcdui.Alert;
@@ -26,6 +27,8 @@ import javax.microedition.media.control.FramePositioningControl;
 import javax.microedition.midlet.*;
 import model.Contato;
 import persistence.ContatoDaoImpl;
+import persistence.ValidarContato;
+import persistence.ValidarContatoAntigo;
 
 /**
  * @author Jefferson
@@ -94,7 +97,11 @@ public class Agenda extends MIDlet implements CommandListener {
                     Display.getDisplay(getThis()).setCurrent(menu);  
                }else if(c==salvarCommand){
                     Contato contato = new Contato(nome.getString().trim(),fone.getString().trim(),celular.getString().trim(),email.getString().trim());
-                    salvarContato(contato);                  
+                    try {
+                        salvarContato(contato);
+                    } catch (Exception ex) {
+                        System.out.println(ex.toString());
+                    }
                }
             }
         });
@@ -206,14 +213,29 @@ public class Agenda extends MIDlet implements CommandListener {
          }
     }
 
-    public void salvarContato(Contato contato){
+    public void salvarContato(Contato contato) throws Exception {
         setContadorContatos(getContadorContatos()+1);   
         contato.setId(getContadorContatos());
         ContatoDaoImpl contatoDaoImpl = new ContatoDaoImpl();
-        contatoDaoImpl.incluirContato(contato);
-        formListarTodos();
+        
+        try {
+            ValidarContato validarContato = new ValidarContato(contato);
+            validarContato.validarContatoInteiro();
+        } catch (Exception e) {
+           System.out.println(e.toString());   
+           Alert alert = new Alert("Aviso:",e.toString(),null, AlertType.INFO);
+           alert.setTimeout(Alert.FOREVER);
+           trocaDisplayable(alert,menu);
+          
+        }
+        
     }
 
+    public Form getInserirContatoForm(){
+        return inserirContatoForm;
+    }
+    // opcoes do menu
+    
     private void incluirContato() {   
         this.formularioContato();
         Display.getDisplay(this).setCurrent(inserirContatoForm);

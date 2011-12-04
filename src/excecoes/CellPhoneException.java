@@ -18,9 +18,11 @@ public class CellPhoneException extends Exception{
         super("CellPhone Exception!");
         this.contato = contato;
     }
-        
-    public void imprimeMsg(){
-        System.out.println("");
+
+    public String toString() {
+        return "Numero de telefone deve ter apenas 8 digitos!";
     }
+    
+    
     
 }

@@ -18,8 +18,8 @@ public class HomePhoneException extends Exception {
         this.contato = contato;
     }
     
-    public void imprimeMsg(){
-        System.out.println(" O Telefone deve ter apenas 8 digitos");
+    public String toString() {
+        return " O Telefone deve ter apenas 8 digitos";
     }
     
 }
